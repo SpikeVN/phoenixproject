@@ -15,16 +15,16 @@
 
 import importlib
 import os
+
+if "credentials.json" not in os.listdir():
+    with open("credentials.json", "w") as f:
+        f.write(os.environ.get("credentials_gcloud_sa"))
+
 import configuration as cfg
 import phoenix
 
 
 def main():
-    if "credentials.json" not in os.listdir():
-        with open("credentials.json", "w") as f:
-            f.write(os.environ.get("credentials_gcloud_sa"))
-            print(f"written {os.environ.get('credentials_gcloud_sa')}")
-    print(os.listdir())
     cfg.init_config_hive()
     bot = phoenix.Bot()
     for f in os.listdir("modules"):
