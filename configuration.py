@@ -71,6 +71,18 @@ def get(_i: str) -> any:
         else:
             logutils.debug(f"   ---> {os.environ[_i]}")
         return os.environ[_i]
+    if _i.replace("_", ".") in os.environ:
+        if (
+            "password" in _i
+            or "token" in _i
+            or "key" in _i
+            or "email" in _i
+            or "url" in _i
+        ):
+            logutils.debug(f"   ---> {len(os.environ[_i.replace('_', '.')])*'*'}")
+        else:
+            logutils.debug(f"   ---> {os.environ[_i.replace('_', '.')]}")
+        return os.environ[_i.replace("_", ".")]
     path = _i.split(".")
     if path[0] == "online":
         return ONLINE_HIVE[".".join(path[1:])]
