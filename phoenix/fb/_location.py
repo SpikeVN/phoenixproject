@@ -76,10 +76,10 @@ class LiveLocationAttachment(LocationAttachment):
     def _from_pull(cls, data):
         return cls(
             uid=data["id"],
-            latitude=data["coordinate"]["latitude"] / (10 ** 8)
+            latitude=data["coordinate"]["latitude"] / (10**8)
             if not data.get("stopReason")
             else None,
-            longitude=data["coordinate"]["longitude"] / (10 ** 8)
+            longitude=data["coordinate"]["longitude"] / (10**8)
             if not data.get("stopReason")
             else None,
             name=data.get("locationTitle"),

@@ -1,11 +1,12 @@
-from . import command
-from .fb.models import ThreadType
-from .globals import COMMAND_REGISTRY
-from . import fb
 import abc
-from .hack import get_module
 import random
 from typing import Callable
+
+from . import command
+from . import fb
+from .fb.models import ThreadType
+from .globals import COMMAND_REGISTRY
+from .hack import get_module
 
 
 class Module(abc.ABC):

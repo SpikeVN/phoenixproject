@@ -1,13 +1,14 @@
-credentials:
-  email: None
-  password: None
-  gcloud:
-    apiKey: None
-    sa: None
+config:
+  credentials:
+    email: None
+    password: None
+    gcloud:
+      apiKey: None
+      sa: None
 
-backend:
-  configSheet: None
+  backend:
+    configSheet: None
 
-modules:
-  gcal:
-    calid: None
+  modules:
+    gcal:
+      calid: None

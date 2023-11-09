@@ -1,7 +1,8 @@
 import random
-import phoenix
-import gcloud
+
 import configuration as cfg
+import gcloud
+import phoenix
 
 
 def update_commands(bot: phoenix.Bot):

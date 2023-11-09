@@ -114,7 +114,7 @@ class Message(object):
         automatic = "" in field_names
         i = 0
 
-        for (literal_text, field_name, format_spec, conversion) in f.parse(text):
+        for literal_text, field_name, format_spec, conversion in f.parse(text):
             offset += len(literal_text)
             result += literal_text
 

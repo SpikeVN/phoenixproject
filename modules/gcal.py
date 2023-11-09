@@ -1,7 +1,8 @@
 import datetime
-import phoenix
+
 import configuration as cfg
 import gcloud
+import phoenix
 
 
 class Reminder(phoenix.Module):

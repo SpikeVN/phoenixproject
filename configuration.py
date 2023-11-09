@@ -14,10 +14,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
-import yaml
-import logutils
-import gcloud
 
+import yaml
+
+import gcloud
+import logutils
 
 CONFIG_HIVE: dict = {}
 ONLINE_HIVE: dict = {}
@@ -71,7 +72,7 @@ def get(_i: str) -> any:
         else:
             logutils.debug(f"   ---> {os.environ[_i]}")
         return os.environ[_i]
-    if _i.replace("_", ".") in os.environ:
+    if _i.replace(".", "_") in os.environ:
         if (
             "password" in _i
             or "token" in _i
@@ -79,10 +80,10 @@ def get(_i: str) -> any:
             or "email" in _i
             or "url" in _i
         ):
-            logutils.debug(f"   ---> {len(os.environ[_i.replace('_', '.')])*'*'}")
+            logutils.debug(f"   ---> {len(os.environ[_i.replace('.', '_')])*'*'}")
         else:
-            logutils.debug(f"   ---> {os.environ[_i.replace('_', '.')]}")
-        return os.environ[_i.replace("_", ".")]
+            logutils.debug(f"   ---> {os.environ[_i.replace('.', '_')]}")
+        return os.environ[_i.replace(".", "_")]
     path = _i.split(".")
     if path[0] == "online":
         return ONLINE_HIVE[".".join(path[1:])]

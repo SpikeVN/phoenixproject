@@ -7,7 +7,7 @@ from . import _util, _exception, _graphql
 
 def generate_session_id():
     """Generate a random session ID between 1 and 9007199254740991."""
-    return random.randint(1, 2 ** 53)
+    return random.randint(1, 2**53)
 
 
 @attr.s(slots=True)
