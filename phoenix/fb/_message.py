@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import attr
 import json
 from string import Formatter
-from . import _util, _attachment, _location, _file, _quick_reply, _sticker
+from . import _file, _attachment, _util, _location, _quick_reply, _sticker
 from ._core import Enum
 
 

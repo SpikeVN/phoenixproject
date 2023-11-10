@@ -1,12 +1,6 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
-import requests
-import urllib
-from uuid import uuid1
-from random import choice
-from bs4 import BeautifulSoup as bs
-from mimetypes import guess_type
 from collections import OrderedDict
 from ._util import *
 from .models import *
@@ -19,6 +13,7 @@ import json
 try:
     from urllib.parse import urlparse, parse_qs
 except ImportError:
+    # noinspection PyUnresolvedReferences
     from urlparse import urlparse, parse_qs
 
 
@@ -72,6 +67,7 @@ class Client(object):
         max_tries=5,
         session_cookies=None,
         logging_level=logging.INFO,
+        use_selenium_for_login: bool = False,
     ):
         """Initialize and log in the client.
 
@@ -100,7 +96,13 @@ class Client(object):
             or not self.setSession(session_cookies, user_agent=user_agent)
             or not self.isLoggedIn()
         ):
-            self.login(email, password, max_tries, user_agent=user_agent)
+            self.login(
+                email,
+                password,
+                max_tries,
+                user_agent=user_agent,
+                use_selenium=use_selenium_for_login,
+            )
 
     """
     INTERNAL REQUEST METHODS
@@ -179,7 +181,9 @@ class Client(object):
             return False
         return True
 
-    def login(self, email, password, max_tries=5, user_agent=None):
+    def login(
+        self, email, password, max_tries=5, user_agent=None, use_selenium: bool = False
+    ):
         """Login the user, using ``email`` and ``password``.
 
         If the user is already logged in, this will do a re-login.
@@ -202,12 +206,20 @@ class Client(object):
 
         for i in range(1, max_tries + 1):
             try:
-                self._state = State.login(
-                    email,
-                    password,
-                    on_2fa_callback=self.on2FACode,
-                    user_agent=user_agent,
-                )
+                if not use_selenium:
+                    self._state = State.login(
+                        email,
+                        password,
+                        on_2fa_callback=self.on2FACode,
+                        user_agent=user_agent,
+                    )
+                else:
+                    self._state = State.login_selenium(
+                        email,
+                        password,
+                        on_2fa_callback=self.on2FACode,
+                        user_agent=user_agent,
+                    )
                 self._uid = self._state.user_id
             except Exception:
                 if i >= max_tries:

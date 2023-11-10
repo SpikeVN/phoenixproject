@@ -12,14 +12,10 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+# noinspection PyUnresolvedReferences
+import ensuredeps
 import importlib
 import os
-
-if "credentials.json" not in os.listdir():
-    with open("credentials.json", "w") as f:
-        f.write(os.environ.get("credentials_gcloud_sa"))
-
 import configuration as cfg
 import phoenix
 
@@ -31,7 +27,9 @@ def main():
         if f.endswith(".py"):
             m = importlib.import_module(f"modules.{f[:-3]}")
             bot.register_module(m)
-    bot.run(cfg.get("credentials.email"), cfg.get("credentials.password"))
+    bot.run(
+        cfg.get("credentials.email"), cfg.get("credentials.password"), use_selenium=True
+    )
 
 
 if __name__ == "__main__":

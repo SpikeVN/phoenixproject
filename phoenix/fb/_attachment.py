@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import attr
-from . import _util
+from phoenix.fb import _util
 
 
 @attr.s(cmp=False)

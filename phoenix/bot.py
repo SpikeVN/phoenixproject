@@ -2,9 +2,8 @@ import abc
 import random
 from typing import Callable
 
-from . import command
-from . import fb
-from .fb.models import ThreadType
+from . import command, fb
+from phoenix.fb import ThreadType
 from .globals import COMMAND_REGISTRY
 from .hack import get_module
 
@@ -26,14 +25,16 @@ class Bot(fb.Client):
         self.modlist: dict[str, Module] = {}
         self.botcmds: dict[str, Callable[[any, list[str]], bool]] = {}
 
-    def run(self, email: str, password: str):
+    def run(self, email: str, password: str, *, use_selenium: bool = False):
         """
         Runs the bot using credentials provided.
 
         :param email: the email of the Facebook user
         :param password: the password of the Facebook user
+        :param use_selenium: whether to use the more robust Selenium-based
+            login.
         """
-        super().__init__(email, password)
+        super().__init__(email, password, use_selenium_for_login=use_selenium)
         super().listen()
 
     def invoke_command(self, ctx: command.Context, content: str):
@@ -45,6 +46,7 @@ class Bot(fb.Client):
 
         if content.startswith(self.prefix):
             cmd, *args = content[1:].split()
+            # TODO - command execution error handling
             result = False
             callee = COMMAND_REGISTRY.get(cmd.lower())
             if callee is None:

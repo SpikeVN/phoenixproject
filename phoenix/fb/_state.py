@@ -7,7 +7,10 @@ import re
 import requests
 import random
 
-from . import _graphql, _util, _exception
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+from phoenix.fb import _graphql, _exception, _util
 
 FB_DTSG_REGEX = re.compile(r'"name":"fb_dtsg","value":"(.*?)"')
 
@@ -122,6 +125,56 @@ class State(object):
             "fb_dtsg": self._fb_dtsg,
         }
 
+    # Phoenix start
+    @classmethod
+    def login_selenium(
+        cls, email: str, password: str, on_2fa_callback, user_agent=None
+    ):
+        uagent = user_agent if user_agent else random.choice(_util.USER_AGENTS)
+        options = webdriver.FirefoxOptions()
+        options.add_argument("-headless")
+        driver = webdriver.Firefox(options=options)
+        driver.get("https://m.facebook.com/")
+        driver.find_element(By.CSS_SELECTOR, "#email").send_keys(email)
+        driver.find_element(By.CSS_SELECTOR, "#pass").send_keys(password)
+        driver.find_element(By.CSS_SELECTOR, "button").click()
+        if "save-device" in driver.current_url:
+            driver.get("https://m.facebook.com/login/save-device/cancel/")
+
+        session = requests.session()
+        session.headers["Referer"] = "https://www.facebook.com"
+        session.headers["Accept"] = "text/html"
+        session.headers["User-Agent"] = uagent
+        for cookie in driver.get_cookies():
+            c = {cookie["name"]: cookie["value"]}
+            session.cookies.update(c)
+        durl = driver.current_url
+
+        if "checkpoint" in driver.current_url and (
+            'id="approvals_code"' in driver.page_source.lower()
+        ):
+            driver.save_screenshot("test.png")
+            raise _exception.FBchatUserError(
+                "Login failed: encountered 2FA (not yet implemented.) "
+                "(Failed on url: {})".format(durl)
+            )
+            # code = on_2fa_callback()
+            # r = _2fa_helper(
+            #     session,
+            #     code,
+            # )
+
+        driver.close()
+        if is_home(durl):
+            return cls.from_session(session=session)
+        else:
+            breakpoint()
+            raise _exception.FBchatUserError(
+                "Login failed. Check email/password. "
+                "(Failed on url: {})".format(durl)
+            )
+
+    # Phoenix end
     @classmethod
     def login(cls, email, password, on_2fa_callback, user_agent=None):
         session = session_factory(user_agent=user_agent)
@@ -150,6 +203,7 @@ class State(object):
         if is_home(r.url):
             return cls.from_session(session=session)
         else:
+            breakpoint()
             raise _exception.FBchatUserError(
                 "Login failed. Check email/password. "
                 "(Failed on url: {})".format(r.url)
