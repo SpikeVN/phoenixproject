@@ -2,17 +2,17 @@
 
 from __future__ import unicode_literals
 
-import logging
-import re
 import json
-from time import time
-from random import random
+import logging
 from contextlib import contextmanager
 from mimetypes import guess_type
 from os.path import basename
-import warnings
+from random import random
+from time import time
 import logutils
+
 import requests
+
 from ._exception import (
     FBchatException,
     FBchatFacebookError,
@@ -195,7 +195,7 @@ def check_content(content, as_json=True):
 def to_json(content):
     content = strip_json_cruft(content)
     j = parse_json(content)
-    log.debug(j)
+    logutils.debug(j)
     return j
 
 
@@ -204,7 +204,7 @@ def get_jsmods_require(j, index):
         try:
             return j["jsmods"]["require"][0][index][0]
         except (KeyError, IndexError) as e:
-            log.warning(
+            logutils.warning(
                 "Error when getting jsmods_require: "
                 "{}. Facebook might have changed protocol".format(j)
             )

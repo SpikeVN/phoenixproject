@@ -1,8 +1,10 @@
-import attr
 import random
+
+import attr
 import paho.mqtt.client
-from ._core import log
+
 from . import _graphql, _exception, _util
+from ._core import log
 
 
 def generate_session_id():

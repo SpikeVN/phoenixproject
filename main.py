@@ -12,23 +12,43 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-# noinspection PyUnresolvedReferences
-import ensuredeps
+import base64
 import importlib
 import os
+import pickle
+import ensuredeps
+
+import requests
+
 import configuration as cfg
+
+import logutils
 import phoenix
+import security
 
 
 def main():
+    logutils.set_min_level(logutils.INFO)
     cfg.init_config_hive()
     bot = phoenix.Bot()
     for f in os.listdir("modules"):
         if f.endswith(".py"):
             m = importlib.import_module(f"modules.{f[:-3]}")
             bot.register_module(m)
+    session = pickle.loads(
+        security.get_cipher().decrypt(
+            base64.b64decode(
+                requests.get(
+                    "https://stash.cbnteck.org/phoenixproject/b64_session_encrypted.pickle"
+                ).content
+            )
+        )
+    )
     bot.run(
-        cfg.get("credentials.email"), cfg.get("credentials.password"), use_selenium=True
+        cfg.get("credentials.email"),
+        cfg.get("credentials.password"),
+        # use_selenium=True
+        session=session,
     )
 
 

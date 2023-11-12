@@ -1,14 +1,24 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
-from collections import OrderedDict
-from ._util import *
-from .models import *
-from . import _graphql
-from ._state import State
-from ._mqtt import Mqtt
-import time
 import json
+import time
+from collections import OrderedDict
+
+from . import _graphql
+from ._thread import ThreadLocation, ThreadType, ThreadColor
+from ._message import EmojiSize, Message, MessageReaction
+from ._user import User, TypingStatus, ActiveStatus
+from ._group import Group
+from ._page import Page
+from ._poll import PollOption, Poll
+from ._plan import Plan
+from ._attachment import Attachment
+from ._quick_reply import QuickReplyText, QuickReplyPhoneNumber, QuickReplyEmail
+from ._exception import FBchatUserError
+from ._mqtt import Mqtt
+from ._state import State
+from ._util import *
 
 try:
     from urllib.parse import urlparse, parse_qs
@@ -65,9 +75,10 @@ class Client(object):
         password,
         user_agent=None,
         max_tries=5,
-        session_cookies=None,
+        session_cookies: dict[str, str] = None,
         logging_level=logging.INFO,
         use_selenium_for_login: bool = False,
+        premade_session: requests.Session = None,
     ):
         """Initialize and log in the client.
 
@@ -102,6 +113,7 @@ class Client(object):
                 max_tries,
                 user_agent=user_agent,
                 use_selenium=use_selenium_for_login,
+                session=premade_session,
             )
 
     """
@@ -182,7 +194,13 @@ class Client(object):
         return True
 
     def login(
-        self, email, password, max_tries=5, user_agent=None, use_selenium: bool = False
+        self,
+        email,
+        password,
+        max_tries=5,
+        user_agent=None,
+        use_selenium: bool = False,
+        session: requests.Session = None,
     ):
         """Login the user, using ``email`` and ``password``.
 
@@ -206,7 +224,9 @@ class Client(object):
 
         for i in range(1, max_tries + 1):
             try:
-                if not use_selenium:
+                if session is not None:
+                    self._state = State.login_session(session)
+                elif not use_selenium:
                     self._state = State.login(
                         email,
                         password,
@@ -225,7 +245,6 @@ class Client(object):
                 if i >= max_tries:
                     raise
                 log.exception("Attempt #{} failed, retrying".format(i))
-                time.sleep(1)
             else:
                 self.onLoggedIn(email=email)
                 break

@@ -1,9 +1,11 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
-import attr
 import json
 from string import Formatter
+
+import attr
+
 from . import _file, _attachment, _util, _location, _quick_reply, _sticker
 from ._core import Enum
 

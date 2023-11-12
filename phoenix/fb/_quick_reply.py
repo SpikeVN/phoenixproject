@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import attr
-from ._attachment import Attachment
 
 
 @attr.s(cmp=False)

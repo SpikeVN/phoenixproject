@@ -1,16 +1,20 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
+import base64
+import pickle
+import random
+import re
+
 import attr
 import bs4
-import re
 import requests
-import random
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-from phoenix.fb import _graphql, _exception, _util
+import logutils
+import security
+from . import _graphql, _exception, _util
 
 FB_DTSG_REGEX = re.compile(r'"name":"fb_dtsg","value":"(.*?)"')
 
@@ -127,9 +131,15 @@ class State(object):
 
     # Phoenix start
     @classmethod
+    def login_session(cls, session: requests.Session):
+        logutils.info("Logging in via pickled session object...")
+        return cls.from_session(session=session)
+
+    @classmethod
     def login_selenium(
         cls, email: str, password: str, on_2fa_callback, user_agent=None
     ):
+        logutils.info("Logging in via Selenium...")
         uagent = user_agent if user_agent else random.choice(_util.USER_AGENTS)
         options = webdriver.FirefoxOptions()
         options.add_argument("-headless")
@@ -148,6 +158,12 @@ class State(object):
         for cookie in driver.get_cookies():
             c = {cookie["name"]: cookie["value"]}
             session.cookies.update(c)
+        with open("b64_session_encrypted.pickle", "w") as f:
+            f.write(
+                base64.b64encode(
+                    security.get_cipher().encrypt(pickle.dumps(session))
+                ).decode()
+            )
         durl = driver.current_url
 
         if "checkpoint" in driver.current_url and (
@@ -170,13 +186,14 @@ class State(object):
         else:
             breakpoint()
             raise _exception.FBchatUserError(
-                "Login failed. Check email/password. "
+                "Login failed. Homepage not reached after entering password. "
                 "(Failed on url: {})".format(durl)
             )
 
     # Phoenix end
     @classmethod
     def login(cls, email, password, on_2fa_callback, user_agent=None):
+        logutils.info("Logging in via REST...")
         session = session_factory(user_agent=user_agent)
 
         soup = find_input_fields(session.get("https://m.facebook.com/").text)
@@ -199,6 +216,13 @@ class State(object):
         # Sometimes Facebook tries to show the user a "Save Device" dialog
         if "save-device" in r.url:
             r = session.get("https://m.facebook.com/login/save-device/cancel/")
+
+        with open("b64_session_encrypted.pickle", "w") as f:
+            f.write(
+                base64.b64encode(
+                    security.get_cipher().encrypt(pickle.dumps(session))
+                ).decode()
+            )
 
         if is_home(r.url):
             return cls.from_session(session=session)

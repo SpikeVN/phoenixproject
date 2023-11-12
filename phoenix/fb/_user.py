@@ -2,10 +2,10 @@
 from __future__ import unicode_literals
 
 import attr
-from ._core import Enum
-from . import _plan
-from ._thread import ThreadType, Thread
 
+from . import _plan
+from ._core import Enum
+from ._thread import ThreadType, Thread
 
 GENDERS = {
     # For standard requests

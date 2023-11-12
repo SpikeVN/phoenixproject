@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import attr
+
 from . import _plan
 from ._thread import ThreadType, Thread
 

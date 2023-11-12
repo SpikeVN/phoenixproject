@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 import re
+
 from . import _util
 from ._exception import FBchatException
 

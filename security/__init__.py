@@ -18,4 +18,5 @@ Implements a number of classes and method to make strengthen
 the bots internal security.
 """
 
+from .crypt import get_cipher
 from .str100 import safe_format, safe_getattr

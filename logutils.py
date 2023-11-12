@@ -44,31 +44,13 @@ WARNING = -1
 ERROR = -2
 FUCKED = -3
 
-N2LV = {
-    "2": "DEBUG",
-    "1": "SUCCESS",
-    "0": "INFO",
-    "-1": "WARNING",
-    "-2": "ERROR",
-    "-3": "FUCKED",
-}
-LV2CL = {
-    "2": COLOR_WHITE,
-    "1": COLOR_GREEN,
-    "0": COLOR_RESET,
-    "-1": COLOR_YELLOW,
-    "-2": COLOR_RED,
-    "-3": COLOR_MAGENTA,
-}
-
-
 LOGGING_MAP = {
-    "debug": (DEBUG, logging.DEBUG),
-    "success": (SUCCESS, logging.INFO),
-    "info": (INFO, logging.INFO),
-    "warning": (WARNING, logging.WARNING),
-    "error": (ERROR, logging.ERROR),
-    "fucked": (FUCKED, logging.ERROR),
+    DEBUG: ("DEBUG", COLOR_WHITE, logging.DEBUG),
+    SUCCESS: ("SUCCESS", COLOR_GREEN, logging.INFO),
+    INFO: ("INFO", COLOR_RESET, logging.INFO),
+    WARNING: ("WARNING", COLOR_YELLOW, logging.WARNING),
+    ERROR: ("ERROR", COLOR_RED, logging.ERROR),
+    FUCKED: ("FUCKED", COLOR_MAGENTA, logging.ERROR),
 }
 
 
@@ -92,9 +74,9 @@ def _log(filename: str, line: int, level: int, *message: str):
             __FORMAT,
             file=os.path.relpath(filename),
             time=time,
-            color=LV2CL[str(level)],
+            color=LOGGING_MAP[level][1],
             line=line,
-            level=N2LV[str(level)],
+            level=LOGGING_MAP[level][0],
         ),
         *conv_message,
         COLOR_RESET,
@@ -107,7 +89,7 @@ def _log(filename: str, line: int, level: int, *message: str):
             time=time,
             color="",
             line=line,
-            level=N2LV[str(level)],
+            level=LOGGING_MAP[level][0],
         )
         + " ".join(conv_message)
     )
@@ -119,14 +101,14 @@ def _get_info():
     return prop.filename, prop.lineno
 
 
-def set_min_level(level: int | str):
+def set_min_level(level):
     global __MIN_LEVEL
     if isinstance(level, int):
         __MIN_LEVEL = level
     else:
         __MIN_LEVEL = LOGGING_MAP[level][0]
     logging.basicConfig(
-        level=LOGGING_MAP[level][1],
+        level=LOGGING_MAP[level][2],
         format="[%(asctime)s %(levelname)s] %(name)s: %(message)s",
         datefmt="%H:%M:%S",
     )

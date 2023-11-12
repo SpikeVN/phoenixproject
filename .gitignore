@@ -242,3 +242,8 @@ tmp/
 checksum.txt
 requirements_rolling.txt
 test.png
+session_cookies.json
+session.json
+
+/logs/
+b64_session_encrypted.pickle

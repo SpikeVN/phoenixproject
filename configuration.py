@@ -88,10 +88,14 @@ def get(_i: str) -> any:
     if path[0] == "online":
         return ONLINE_HIVE[".".join(path[1:])]
     a = CONFIG_HIVE["config"].copy()
-    for i in path:
-        a = a[i]
-    logutils.debug(f"   ---> {a}")
-    return None if a == "None" else a
+    try:
+        for i in path:
+            a = a[i]
+        logutils.debug(f"   ---> {a}")
+        return None if a == "None" else a
+    except KeyError:
+        logutils.error(f"Config entry `{_i}` not found.")
+        return None
 
 
 def read(_i):

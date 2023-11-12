@@ -2,8 +2,10 @@ import abc
 import random
 from typing import Callable
 
+import requests
+
+from .fb import ThreadType
 from . import command, fb
-from phoenix.fb import ThreadType
 from .globals import COMMAND_REGISTRY
 from .hack import get_module
 
@@ -25,7 +27,14 @@ class Bot(fb.Client):
         self.modlist: dict[str, Module] = {}
         self.botcmds: dict[str, Callable[[any, list[str]], bool]] = {}
 
-    def run(self, email: str, password: str, *, use_selenium: bool = False):
+    def run(
+        self,
+        email: str,
+        password: str,
+        *,
+        use_selenium: bool = False,
+        session: requests.Session = None
+    ):
         """
         Runs the bot using credentials provided.
 
@@ -33,8 +42,19 @@ class Bot(fb.Client):
         :param password: the password of the Facebook user
         :param use_selenium: whether to use the more robust Selenium-based
             login.
+        :param session: a session object already logged into Facebook.
+            For easy storage, pickle is recommended.
         """
-        super().__init__(email, password, use_selenium_for_login=use_selenium)
+        if session is not None:
+            super().__init__(
+                email,
+                password,
+                user_agent=None,
+                use_selenium_for_login=use_selenium,
+                premade_session=session,
+            )
+        else:
+            super().__init__(email, password, use_selenium_for_login=use_selenium)
         super().listen()
 
     def invoke_command(self, ctx: command.Context, content: str):
