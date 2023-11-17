@@ -1,7 +1,7 @@
 import datetime
 
 import configuration as cfg
-import gcloud
+import gcloud_helper
 import phoenix
 
 
@@ -14,7 +14,7 @@ class Reminder(phoenix.Module):
     def update_events(self):
         now = datetime.datetime.utcnow().isoformat() + "Z"  # 'Z' indicates UTC time
         events_result = (
-            gcloud.calendar_service.events()
+            gcloud_helper.calendar_service.events()
             .list(
                 calendarId=cfg.get("modules.gcal.calid"),
                 timeMin=now,

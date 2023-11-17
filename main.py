@@ -17,6 +17,8 @@ import importlib
 import os
 import pickle
 import ensuredeps
+import api
+import database
 
 import requests
 
@@ -30,6 +32,7 @@ import security
 def main():
     logutils.set_min_level(logutils.INFO)
     cfg.init_config_hive()
+    api.do_stuff()
     bot = phoenix.Bot()
     for f in os.listdir("modules"):
         if f.endswith(".py"):
@@ -38,9 +41,10 @@ def main():
     session = pickle.loads(
         security.get_cipher().decrypt(
             base64.b64decode(
-                requests.get(
-                    "https://stash.cbnteck.org/phoenixproject/b64_session_encrypted.pickle"
-                ).content
+                database.DB.collection("phoenixfb")
+                .document("encryptedSession")
+                .get()
+                .get("value")
             )
         )
     )

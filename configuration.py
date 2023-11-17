@@ -17,7 +17,7 @@ import os
 
 import yaml
 
-import gcloud
+import gcloud_helper
 import logutils
 
 CONFIG_HIVE: dict = {}
@@ -35,7 +35,7 @@ def init_config_hive():
         global CONFIG_HIVE
         CONFIG_HIVE = yaml.safe_load(f.read())
     result = (
-        gcloud.sheets_service.spreadsheets()
+        gcloud_helper.sheets_service.spreadsheets()
         .values()
         .get(spreadsheetId=get("backend.configSheet"), range="A7:D8")
         .execute()

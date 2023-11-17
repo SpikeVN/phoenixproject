@@ -1,13 +1,14 @@
 import random
 
 import configuration as cfg
-import gcloud
+import gcloud_helper
+import logutils
 import phoenix
 
 
 def update_commands(bot: phoenix.Bot):
     result = (
-        gcloud.sheets_service.spreadsheets()
+        gcloud_helper.sheets_service.spreadsheets()
         .values()
         .get(spreadsheetId=cfg.get("backend.configSheet"), range="13:32")
         .execute()
@@ -50,7 +51,11 @@ def update_commands(bot: phoenix.Bot):
 
                 return cb
 
-            bot.add_or_edit_command(row[1].split()[0], ccb(row))
+            try:
+                bot.add_or_edit_command(row[1].split()[0], ccb(row))
+            except IndexError:
+                logutils.error("Invalid syntax found. Ignoring and moving on.")
+                pass
 
 
 class ShitpostUpdater(phoenix.Module):
