@@ -12,13 +12,13 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+import ensuredeps
 import base64
 import importlib
 import os
 import pickle
 import api
 import database
-import ensuredeps
 import configuration as cfg
 
 from phoenix import logutils
