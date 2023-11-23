@@ -30,7 +30,6 @@ def update_commands(bot: phoenix.Bot):
                         for i, t in enumerate(nrow[1].split()[1:]):
                             if t[0] == "%" and t[-1] == "%":
                                 if t[1] == "*":
-                                    breakpoint()
                                     tok[t[2:-1]] = args
                                 else:
                                     tok[t[1:-1]] = args[i]
