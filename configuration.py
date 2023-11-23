@@ -18,7 +18,7 @@ import os
 import yaml
 
 import gcloud_helper
-import logutils
+from phoenix import logutils
 
 CONFIG_HIVE: dict = {}
 ONLINE_HIVE: dict = {}
@@ -68,7 +68,7 @@ def get(_i: str) -> any:
             or "email" in _i
             or "url" in _i
         ):
-            logutils.debug(f"   ---> {len(os.environ[_i])*'*'}")
+            logutils.debug(f"   ---> {len(os.environ[_i]) * '*'}")
         else:
             logutils.debug(f"   ---> {os.environ[_i]}")
         return os.environ[_i]
@@ -80,7 +80,7 @@ def get(_i: str) -> any:
             or "email" in _i
             or "url" in _i
         ):
-            logutils.debug(f"   ---> {len(os.environ[_i.replace('.', '_')])*'*'}")
+            logutils.debug(f"   ---> {len(os.environ[_i.replace('.', '_')]) * '*'}")
         else:
             logutils.debug(f"   ---> {os.environ[_i.replace('.', '_')]}")
         return os.environ[_i.replace(".", "_")]

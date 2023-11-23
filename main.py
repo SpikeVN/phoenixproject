@@ -16,15 +16,12 @@ import base64
 import importlib
 import os
 import pickle
-import ensuredeps
 import api
 import database
-
-import requests
-
+import ensuredeps
 import configuration as cfg
 
-import logutils
+from phoenix import logutils
 import phoenix
 import security
 
@@ -34,6 +31,7 @@ def main():
     cfg.init_config_hive()
     api.do_stuff()
     bot = phoenix.Bot()
+
     for f in os.listdir("modules"):
         if f.endswith(".py"):
             m = importlib.import_module(f"modules.{f[:-3]}")

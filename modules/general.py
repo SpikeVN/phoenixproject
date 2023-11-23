@@ -13,6 +13,10 @@ class General(phoenix.Module):
         )
         return True
 
+    @phoenix.cmd_def(name="shutdown")
+    def shutdown(self, ctx: phoenix.Context, args: list[str]):
+        exit(0)
+
     @phoenix.cmd_def(name="tth")
     def tth(self, ctx: phoenix.Context, args: list[str]) -> bool:
         ctx.reply("m phản động ít th")

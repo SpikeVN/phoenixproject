@@ -12,7 +12,7 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-import logutils
+from .. import logutils
 import security
 from . import _graphql, _exception, _util
 
@@ -142,7 +142,7 @@ class State(object):
         logutils.info("Logging in via Selenium...")
         uagent = user_agent if user_agent else random.choice(_util.USER_AGENTS)
         options = webdriver.FirefoxOptions()
-        options.add_argument("-headless")
+        # options.add_argument("-headless")
         driver = webdriver.Firefox(options=options)
         driver.get("https://m.facebook.com/")
         driver.find_element(By.CSS_SELECTOR, "#email").send_keys(email)

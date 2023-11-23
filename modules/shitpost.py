@@ -2,7 +2,7 @@ import random
 
 import configuration as cfg
 import gcloud_helper
-import logutils
+from phoenix import logutils
 import phoenix
 
 
@@ -30,11 +30,12 @@ def update_commands(bot: phoenix.Bot):
                         for i, t in enumerate(nrow[1].split()[1:]):
                             if t[0] == "%" and t[-1] == "%":
                                 if t[1] == "*":
+                                    breakpoint()
                                     tok[t[2:-1]] = args
                                 else:
                                     tok[t[1:-1]] = args[i]
                         response = random.choice(nrow[2:])
-                        if len(tok) != len(args):
+                        if len(tok) != len(args) and "%*" not in nrow[1]:
                             ctx.reply(
                                 "số tham số trong template không trùng với tham số mà mày đút vào. you L bruh"
                             )
@@ -69,3 +70,9 @@ class ShitpostUpdater(phoenix.Module):
 def get(bot: phoenix.Bot):
     update_commands(bot)
     return ShitpostUpdater(bot)
+
+
+if __name__ == "__main__":
+    bot = phoenix.Bot()
+    update_commands(bot)
+    print(bot.botcmds)

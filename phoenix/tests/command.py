@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable
 
-import logutils
-from .. import fb
+from .. import fb, logutils
 from ..globals import COMMAND_REGISTRY
 
 

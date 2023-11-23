@@ -24,7 +24,7 @@ import security
 LOG = []
 
 __FORMAT = "{color}[{time} {level}] {file}@{line}: "
-LOGFILE = os.path.join("logs", datetime.datetime.now().isoformat() + ".txt")
+LOGFILE = os.path.join("../logs", datetime.datetime.now().isoformat() + ".txt")
 __MIN_LEVEL = 0
 
 COLOR_BLACK = "\N{ESC}[30m"
@@ -55,10 +55,11 @@ LOGGING_MAP = {
 
 
 def save_log():
-    if "logs" not in os.listdir():
-        os.mkdir("logs")
-    with open(LOGFILE, "w") as f:
-        f.write("\n".join(LOG))
+    # if "logs" not in os.listdir():
+    #     os.mkdir("../logs")
+    # with open(LOGFILE, "w") as f:
+    #     f.write("\n".join(LOG))
+    pass
 
 
 def _log(filename: str, line: int, level: int, *message: str):

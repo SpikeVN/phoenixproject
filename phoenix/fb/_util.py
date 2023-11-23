@@ -9,7 +9,7 @@ from mimetypes import guess_type
 from os.path import basename
 from random import random
 from time import time
-import logutils
+from .. import logutils
 
 import requests
 
