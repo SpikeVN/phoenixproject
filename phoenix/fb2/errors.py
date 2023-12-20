@@ -1,0 +1,2 @@
+class PhoenixError(Exception):
+    pass

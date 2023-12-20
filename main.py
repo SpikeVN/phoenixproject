@@ -46,6 +46,8 @@ def main():
             )
         )
     )
+    if not os.path.exists("tmp"):
+        os.mkdir("tmp")
     bot.run(
         cfg.get("credentials.email"),
         cfg.get("credentials.password"),

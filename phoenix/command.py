@@ -19,25 +19,51 @@ class Context:
     _storage: any
     bot: fb.Client
 
-    def send_message(self, content: str, *args, **kwargs):
-        # noinspection PyArgumentList
-        self.bot.send(
-            content,
-            self.thread_id,
-            self.thread_type,
-            *args,
-            **kwargs,
-        )
+    def send(
+        self, content: str, attachment_paths: str | list[str] = None, *args, **kwargs
+    ):
+        if attachment_paths is not None:
+            # noinspection PyArgumentList
+            self.bot.sendLocalFiles(
+                attachment_paths,
+                content,
+                self.thread_id,
+                self.thread_type,
+                *args,
+                **kwargs,
+            )
+        else:
+            # noinspection PyArgumentList
+            self.bot.send(
+                content,
+                self.thread_id,
+                self.thread_type,
+                *args,
+                **kwargs,
+            )
 
-    def reply(self, content: str, *args, **kwargs):
-        # noinspection PyArgumentList
-        self.bot.send(
-            fb.Message(text=content, reply_to_id=self.message.uid),
-            self.thread_id,
-            self.thread_type,
-            *args,
-            **kwargs,
-        )
+    def reply(
+        self, content: str, attachment_paths: str | list[str] = None, *args, **kwargs
+    ):
+        if attachment_paths is not None:
+            # noinspection PyArgumentList
+            self.bot.sendLocalFiles(
+                attachment_paths,
+                fb.Message(text=content, reply_to_id=self.message.uid),
+                self.thread_id,
+                self.thread_type,
+                *args,
+                **kwargs,
+            )
+        else:
+            # noinspection PyArgumentList
+            self.bot.send(
+                fb.Message(text=content, reply_to_id=self.message.uid),
+                self.thread_id,
+                self.thread_type,
+                *args,
+                **kwargs,
+            )
 
 
 def cmd_def(
